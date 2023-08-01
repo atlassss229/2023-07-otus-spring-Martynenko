@@ -1,6 +1,7 @@
 package ru.otus.model;
 
 import java.util.List;
+
 public class TestQuestion {
     private String question;
 
