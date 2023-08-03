@@ -7,7 +7,7 @@ public class Question {
 
     private final CorrectAnswer correctAnswer = new CorrectAnswer();
 
-    private String question;
+    private final String question;
 
     public Question(List<String> anserList, String correctAnswer, String question) {
         this.answer.setAnswerList(anserList);
