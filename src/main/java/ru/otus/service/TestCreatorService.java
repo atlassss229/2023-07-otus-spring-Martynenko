@@ -1,10 +1,10 @@
 package ru.otus.service;
 
-import ru.otus.model.TestQuestion;
+import ru.otus.model.Question;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 public interface TestCreatorService {
-    Map<String, TestQuestion> createTest() throws IOException;
+    List<Question> createTest() throws IOException;
 }

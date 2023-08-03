@@ -1,25 +1,26 @@
 package ru.otus.service;
 
-import ru.otus.model.TestQuestion;
+import ru.otus.model.Question;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
+
 
 public class RunServiceImpl implements RunService {
 
-    private final TestCreatorServiceImpl testCreatorServiceImpl;
+    private final TestCreatorService testCreatorService;
 
     public RunServiceImpl(TestCreatorServiceImpl testCreatorServiceImpl) {
-        this.testCreatorServiceImpl = testCreatorServiceImpl;
+        this.testCreatorService = testCreatorServiceImpl;
     }
 
     @Override
     public void run() throws IOException {
-        Map <String, TestQuestion> questionHashMap = testCreatorServiceImpl.createTest();
-        for (String key : questionHashMap.keySet()) {
-            System.out.println(questionHashMap.get(key).getQuestion());
-            System.out.println(questionHashMap.get(key).getAnserList());
-            System.out.println(questionHashMap.get(key).getCorrectAnswer());
+        List<Question> questionList = testCreatorService.createTest();
+        for (Question question : questionList) {
+            System.out.println(question.getQuestion());
+            System.out.println(question.getAnswerList());
+            System.out.println(question.getCorrectAnswer());
         }
     }
 }
