@@ -5,6 +5,10 @@ public class Answer {
 
     private final boolean isCoorect;
 
+    public boolean isCoorect() {
+        return isCoorect;
+    }
+
     public Answer(String value, boolean isCoorect) {
         this.value = value;
         this.isCoorect = isCoorect;

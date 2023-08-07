@@ -23,19 +23,23 @@ public class TestCreatorServiceImpl implements TestCreatorService {
         List<String> lineListNoHeader = removeHeader(resource);
         for (String line : lineListNoHeader) {
             List<String> questionLineList = List.of(line.split(";"));
-            String correctAnswer = questionLineList.get(2);
-            List<String> answerStringList = List.of(questionLineList.get(1).split(","));
-            List<Answer> answerList = new ArrayList<>();
-            for (String answerString : answerStringList) {
-                boolean isCorrectAnswer = answerString.equals(correctAnswer);
-                Answer answer = new Answer(answerString, isCorrectAnswer);
-                answerList.add(answer);
-            }
-            String questionString = questionLineList.get(0);
-            Question question =  new Question(questionString, answerList);
+            Question question = getQuestion(questionLineList);
             questionList.add(question);
         }
         return questionList;
+    }
+
+    private static Question getQuestion(List<String> questionLineList) {
+        String correctAnswer = questionLineList.get(2);
+        List<String> answerStringList = List.of(questionLineList.get(1).split(","));
+        List<Answer> answerList = new ArrayList<>();
+        for (String answerString : answerStringList) {
+            boolean isCorrectAnswer = answerString.equals(correctAnswer);
+            Answer answer = new Answer(answerString, isCorrectAnswer);
+            answerList.add(answer);
+        }
+        String questionString = questionLineList.get(0);
+        return new Question(questionString, answerList);
     }
 
     private static List<String> removeHeader(Resource resource) {
