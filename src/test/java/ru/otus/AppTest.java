@@ -5,8 +5,6 @@ import ru.otus.dao.ResourceProviderImpl;
 import ru.otus.service.TestCreatorService;
 import ru.otus.service.TestCreatorServiceImpl;
 
-import java.io.IOException;
-
 public class AppTest {
 
     @org.junit.jupiter.api.Test

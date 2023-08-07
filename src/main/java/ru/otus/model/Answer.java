@@ -13,8 +13,4 @@ public class Answer {
     public String getValue() {
         return value;
     }
-
-    public boolean isCoorect() {
-        return isCoorect;
-    }
 }
