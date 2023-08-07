@@ -3,16 +3,18 @@ package ru.otus.model;
 public class Answer {
     private final String value;
 
-    private final boolean isCoorect;
+    private final boolean isCorrect;
 
-    public boolean isCoorect() {
-        return isCoorect;
-    }
 
-    public Answer(String value, boolean isCoorect) {
+    public Answer(String value, boolean isCorrect) {
         this.value = value;
-        this.isCoorect = isCoorect;
+        this.isCorrect = isCorrect;
     }
+
+    public boolean isCorrect() {
+        return isCorrect;
+    }
+
 
     public String getValue() {
         return value;
