@@ -3,27 +3,21 @@ package ru.otus.model;
 import java.util.List;
 
 public class Question {
-    private final Answer answer = new Answer();
-
-    private final CorrectAnswer correctAnswer = new CorrectAnswer();
-
     private final String question;
 
-    public Question(List<String> anserList, String correctAnswer, String question) {
-        this.answer.setAnswerList(anserList);
-        this.correctAnswer.setCorrectAnswer(correctAnswer);
+    private final List<Answer> answerList;
+
+
+    public Question(String question, List<Answer> answerList) {
+        this.answerList = answerList;
         this.question = question;
+    }
+
+    public List<Answer> getAnswerList() {
+        return answerList;
     }
 
     public String getQuestion() {
         return question;
-    }
-
-    public List<String> getAnswerList() {
-        return answer.getAnswerList();
-    }
-
-    public String getCorrectAnswer() {
-        return correctAnswer.getCorrectAnswer();
     }
 }

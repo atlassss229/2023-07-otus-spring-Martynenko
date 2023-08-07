@@ -1,18 +1,20 @@
 package ru.otus.model;
 
-import java.util.List;
-
 public class Answer {
-    private List<String> anserList;
+    private final String value;
 
-    public Answer() {
+    private final boolean isCoorect;
+
+    public Answer(String value, boolean isCoorect) {
+        this.value = value;
+        this.isCoorect = isCoorect;
     }
 
-    public List<String> getAnswerList() {
-        return anserList;
+    public String getValue() {
+        return value;
     }
 
-    public void setAnswerList(List<String> anserList) {
-        this.anserList = anserList;
+    public boolean isCoorect() {
+        return isCoorect;
     }
 }

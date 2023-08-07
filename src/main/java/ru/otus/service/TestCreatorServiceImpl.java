@@ -1,12 +1,10 @@
 package ru.otus.service;
 
+import ru.otus.dao.Resource;
 import ru.otus.dao.ResourceProviderImpl;
+import ru.otus.model.Answer;
 import ru.otus.model.Question;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,25 +17,31 @@ public class TestCreatorServiceImpl implements TestCreatorService {
     }
 
     @Override
-    public List<Question> createTest() throws IOException {
+    public List<Question> createTest() {
         List<Question> questionList = new ArrayList<>();
-        try (InputStream stream = resourceProvider.getResource();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
-            //вычитал заголовок, кстати, а зачем он?
-            reader.readLine();
-            while (reader.ready()) {
-                String line = reader.readLine();
-                List<String> lineList = List.of(line.split("/"));
-                List<String> annswerList = List.of(lineList.get(1).split(","));
-                Question question = new Question(
-                        annswerList,
-                        lineList.get(2),
-                        lineList.get(0)
-                );
-                questionList.add(question);
-
+        Resource resource = resourceProvider.getResource();
+        List<String> lineListNoHeader = removeHeader(resource);
+        for (String line : lineListNoHeader) {
+            List<String> questionLineList = List.of(line.split(";"));
+            String correctAnswer = questionLineList.get(2);
+            List<String> answerStringList = List.of(questionLineList.get(1).split(","));
+            List<Answer> answerList = new ArrayList<>();
+            for (String answerString : answerStringList) {
+                boolean isCorrectAnswer = answerString.equals(correctAnswer);
+                Answer answer = new Answer(answerString, isCorrectAnswer);
+                answerList.add(answer);
             }
-            return questionList;
+            String questionString = questionLineList.get(0);
+            Question question =  new Question(questionString, answerList);
+            questionList.add(question);
         }
+        return questionList;
+    }
+
+    private static List<String> removeHeader(Resource resource) {
+        List<String> lineList = List.of(resource.getFile().split("\n"));
+        List<String> lineListNoHeader = new ArrayList<>(lineList);
+        lineListNoHeader.remove(0);
+        return lineListNoHeader;
     }
 }

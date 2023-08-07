@@ -1,10 +1,10 @@
 package ru.otus.service;
 
+import ru.otus.model.Answer;
 import ru.otus.model.Question;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
 
 public class RunServiceImpl implements RunService {
 
@@ -15,12 +15,15 @@ public class RunServiceImpl implements RunService {
     }
 
     @Override
-    public void run() throws IOException {
+    public void run() {
         List<Question> questionList = testCreatorService.createTest();
         for (Question question : questionList) {
             System.out.println(question.getQuestion());
-            System.out.println(question.getAnswerList());
-            System.out.println(question.getCorrectAnswer());
+            List<String> answerStringList = new ArrayList<>();
+            for (Answer answer : question.getAnswerList()) {
+                answerStringList.add(answer.getValue());
+            }
+            System.out.println(answerStringList);
         }
     }
 }
