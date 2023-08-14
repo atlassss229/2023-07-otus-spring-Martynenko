@@ -1,57 +1,55 @@
 package ru.otus.service;
 
+import ru.otus.dao.CsvQuestionDao;
+import ru.otus.dao.QuestionDao;
+import ru.otus.dao.StudentDao;
 import ru.otus.model.Answer;
 import ru.otus.model.Question;
 import ru.otus.model.Student;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class RunServiceImpl implements RunService {
 
-    private final TestCreatorService testCreatorService;
+    private final QuestionDao questionDao;
+
+    private final IOService ioService;
 
     private final Integer questionToPass;
 
-    public RunServiceImpl(TestCreatorServiceImpl testCreatorServiceImpl,
+    private final StudentDao studentDao;
+
+    public RunServiceImpl(CsvQuestionDao csvQuestionDao,
+                          IOService ioService,
+                          StudentDao studentDao,
                           Integer questionToPass) {
-        this.testCreatorService = testCreatorServiceImpl;
+        this.questionDao = csvQuestionDao;
+        this.ioService = ioService;
+        this.studentDao = studentDao;
         this.questionToPass = questionToPass;
     }
 
     @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
-        Student student = getStudentName(scanner);
-        testStudent(scanner, student);
+        Student student = studentDao.getStudent();
+        testStudent(student);
         printTestingResult(student);
     }
 
-
-    private Student getStudentName(Scanner scanner) {
-
-        System.out.print("Enter your first name: ");
-        String firstName = scanner.nextLine();
-
-        System.out.print("Enter your last name: ");
-        String lastName = scanner.nextLine();
-
-        return new Student(firstName, lastName);
-    }
-
-    private void testStudent(Scanner scanner, Student student) {
-        List<Question> questionList = testCreatorService.createTest();
+    private void testStudent(Student student) {
+        List<Question> questionList = questionDao.questionList();
         for (Question question : questionList) {
-            System.out.println(question.getQuestion());
+            ioService.printLine(question.getQuestion());
             printAnswersLine(question);
             Answer answer;
+            List<Answer> answerList = question.getAnswerList();
             while (true) {
-                try {
-                    int studentAnswer = Integer.parseInt(scanner.nextLine()) - 1;
+                int studentAnswer = ioService.readInt() - 1;
+                if (studentAnswer >= 0 && studentAnswer < answerList.size()) {
                     answer = question.getAnswerList().get(studentAnswer);
                     break;
-                } catch (Exception e) {
-                    System.out.println("please enter correct answer number");
+                } else {
+                    ioService.printLine("please enter correct answer number");
                 }
             }
             if (answer.isCorrect()) {
@@ -67,17 +65,17 @@ public class RunServiceImpl implements RunService {
             answersLine.append(count).append(")").append(" ").append(answer.getValue()).append("; ");
             count++;
         }
-        System.out.println(answersLine);
+        ioService.printLine(answersLine.toString());
     }
 
     private void printTestingResult(Student student) {
-        System.out.println(student.getFirstName() + " " + student.getLastName());
-        System.out.println("testing result:");
+        ioService.printLine(student.getFirstName() + " " + student.getLastName());
+        ioService.printLine("testing result:");
         if (student.getNumOfQuestionsAnswered() >= questionToPass) {
-            System.out.println("Well done! You passed! Your score = "
+            ioService.printLine("Well done! You passed! Your score = "
                     + student.getNumOfQuestionsAnswered());
         } else {
-            System.out.println("Something gone vert wrong. You didn't pass. Your score = "
+            ioService.printLine("Something gone vert wrong. You didn't pass. Your score = "
                     + student.getNumOfQuestionsAnswered());
         }
     }
