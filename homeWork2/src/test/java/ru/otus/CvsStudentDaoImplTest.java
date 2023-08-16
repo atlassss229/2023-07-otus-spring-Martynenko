@@ -10,8 +10,7 @@ import ru.otus.model.Student;
 import ru.otus.service.IOService;
 import ru.otus.service.IOServiceImpl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 public class CvsStudentDaoImplTest {
 
@@ -24,7 +23,12 @@ public class CvsStudentDaoImplTest {
         QuestionDao questionDao =
                 new CsvQuestionDao(resource);
 
-        Assertions.assertEquals(5, (questionDao.questionList().size()));
+        int questionListSize = questionDao.questionList().size();
+
+        System.out.printf("expected 5 questions - in result %s%n",
+                questionListSize);
+        Assertions.assertEquals(5, questionListSize);
+
     }
 
     @org.junit.jupiter.api.Test
@@ -35,7 +39,12 @@ public class CvsStudentDaoImplTest {
         Student student = new Student("StudentFirstName", "StudentLastName");
         IOService ioService = new IOServiceImpl();
         ioService.printLine(student.getLastName());
-        Assertions.assertEquals("StudentLastName", outputStreamCaptor.toString()
-                .trim());
+
+        String compareValue = outputStreamCaptor.toString().trim();
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        System.out.printf("expected student last name %s - in result %s",
+                "StudentLastName", student.getLastName());
+
+        Assertions.assertEquals("StudentLastName", compareValue);
     }
 }

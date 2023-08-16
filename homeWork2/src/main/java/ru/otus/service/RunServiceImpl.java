@@ -8,6 +8,7 @@ import ru.otus.model.Question;
 import ru.otus.model.Student;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class RunServiceImpl implements RunService {
 
@@ -18,6 +19,8 @@ public class RunServiceImpl implements RunService {
     private final Integer questionToPass;
 
     private final StudentDao studentDao;
+
+    private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
     public RunServiceImpl(CsvQuestionDao csvQuestionDao,
                           IOService ioService,
@@ -43,19 +46,30 @@ public class RunServiceImpl implements RunService {
             printAnswersLine(question);
             Answer answer;
             List<Answer> answerList = question.getAnswerList();
-            while (true) {
-                int studentAnswer = ioService.readInt() - 1;
-                if (studentAnswer >= 0 && studentAnswer < answerList.size()) {
-                    answer = question.getAnswerList().get(studentAnswer);
-                    break;
-                } else {
-                    ioService.printLine("please enter correct answer number");
-                }
-            }
+            answer = getStudentAnswer(question, answerList);
+
             if (answer.isCorrect()) {
                 student.setNumOfQuestionsAnswered(student.getNumOfQuestionsAnswered() + 1);
             }
         }
+    }
+
+    private Answer getStudentAnswer(Question question, List<Answer> answerList) {
+        Answer answer;
+        while (true) {
+            String studentAnswer = ioService.readLine();
+            if (isNumericAndShortEnough(studentAnswer)) {
+                int answerIndex = Integer.parseInt(studentAnswer) - 1;
+                if (answerIndex >= 0 && answerIndex < answerList.size()) {
+                    answer = question.getAnswerList().get(answerIndex);
+                    break;
+                }
+                ioService.printLine("please enter correct answer number");
+            } else {
+                ioService.printLine("please enter correct answer number");
+            }
+        }
+        return answer;
     }
 
     private void printAnswersLine(Question question) {
@@ -78,6 +92,13 @@ public class RunServiceImpl implements RunService {
             ioService.printLine("Something gone vert wrong. You didn't pass. Your score = "
                     + student.getNumOfQuestionsAnswered());
         }
+    }
+
+    public boolean isNumericAndShortEnough(String strNum) {
+        if (strNum == null || strNum.length() > 5) {
+            return false;
+        }
+        return pattern.matcher(strNum).matches();
     }
 }
 

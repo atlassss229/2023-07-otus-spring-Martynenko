@@ -1,13 +1,10 @@
 package ru.otus.dao;
 
 import org.springframework.core.io.Resource;
-import org.springframework.util.FileCopyUtils;
 import ru.otus.model.Answer;
 import ru.otus.model.Question;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +35,12 @@ public class CsvQuestionDao implements QuestionDao {
     }
 
     private String getFileAsString() {
-        String file;
-        try (Reader reader = new InputStreamReader(resource.getInputStream(), UTF_8)) {
-            file = FileCopyUtils.copyToString(reader);
+
+        try {
+            return resource.getContentAsString(UTF_8);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        return file;
     }
 
     private Question getQuestion(List<String> questionLineList) {
