@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+  messages:
+    basename: appmessages
+    encoding: "UTF-8"
+
+application:
+  resource: questAndAnsw_${application.locale}.csv
+  question-to-pass: 3
+  locale: ru
