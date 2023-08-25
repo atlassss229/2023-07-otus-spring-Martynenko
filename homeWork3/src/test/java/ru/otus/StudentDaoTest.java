@@ -1,14 +1,10 @@
 package ru.otus;
 
-import net.bytebuddy.utility.nullability.AlwaysNull;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.dao.StudentDaoImpl;
-import ru.otus.model.Student;
 import ru.otus.service.IOService;
-import ru.otus.service.IOServiceImpl;
 import ru.otus.service.MessageSourceService;
 
 import static org.mockito.Mockito.*;
