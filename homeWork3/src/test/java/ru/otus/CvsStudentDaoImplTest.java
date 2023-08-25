@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import ru.otus.config.AppProps;
 import ru.otus.dao.CsvQuestionDao;
 import ru.otus.dao.QuestionDao;
 import ru.otus.model.Student;
@@ -11,6 +12,9 @@ import ru.otus.service.IOService;
 import ru.otus.service.IOServiceImpl;
 
 import java.io.*;
+import java.util.Locale;
+
+import static org.mockito.Mockito.mock;
 
 public class CvsStudentDaoImplTest {
 
@@ -19,8 +23,10 @@ public class CvsStudentDaoImplTest {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
         Resource resource = resourceLoader.getResource("classpath:questAndAnsw_en.csv");
 
+        AppProps appProps = new AppProps(resource, null, mock(Locale.class));
+
         QuestionDao questionDao =
-                new CsvQuestionDao(resource);
+                new CsvQuestionDao(appProps);
 
         int questionListSize = questionDao.questionList().size();
 

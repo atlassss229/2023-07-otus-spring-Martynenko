@@ -1,9 +1,11 @@
 package ru.otus.dao;
 
+import org.springframework.stereotype.Component;
 import ru.otus.model.Student;
 import ru.otus.service.IOService;
 import ru.otus.service.MessageSourceService;
 
+@Component
 public class StudentDaoImpl implements StudentDao {
 
     private final IOService ioService;
@@ -17,7 +19,6 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public Student getStudent() {
-
 
         ioService.printLine(messageSourceService.getMessage("enter_first_name", null));
         String firstName = ioService.readLine();

@@ -1,6 +1,9 @@
 package ru.otus.dao;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
+import ru.otus.config.AppProps;
 import ru.otus.model.Answer;
 import ru.otus.model.Question;
 
@@ -11,12 +14,14 @@ import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+@Component
+@EnableConfigurationProperties(AppProps.class)
 public class CsvQuestionDao implements QuestionDao {
 
     private final Resource resource;
 
-    public CsvQuestionDao(Resource resource) {
-        this.resource = resource;
+    public CsvQuestionDao(AppProps appProps) {
+        this.resource = appProps.getResource();
     }
 
     @Override
