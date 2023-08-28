@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import ru.otus.config.AppProps;
+import ru.otus.dao.LocaleProvider;
 
 import java.util.Locale;
 
@@ -15,8 +16,9 @@ public class MessageSourceServiceImpl implements MessageSourceService {
 
     private final Locale locale;
 
-    public MessageSourceServiceImpl(AppProps appProps, MessageSource messageSource) {
-        this.locale = appProps.getLocale();
+    public MessageSourceServiceImpl(MessageSource messageSource,
+                                    LocaleProvider provider) {
+        this.locale = provider.getLocale();
         this.messageSource = messageSource;
     }
 

@@ -1,11 +1,10 @@
 package ru.otus.service;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
-import ru.otus.config.AppProps;
 import ru.otus.dao.CsvQuestionDao;
 import ru.otus.dao.QuestionDao;
+import ru.otus.dao.QuestionParamProvider;
 import ru.otus.dao.StudentDao;
 import ru.otus.model.Answer;
 import ru.otus.model.Question;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
-@EnableConfigurationProperties(AppProps.class)
 public class RunServiceImpl implements CommandLineRunner {
 
     private final QuestionDao questionDao;
@@ -32,14 +30,14 @@ public class RunServiceImpl implements CommandLineRunner {
 
 
     public RunServiceImpl(CsvQuestionDao csvQuestionDao,
-                          AppProps appProps,
+                          QuestionParamProvider provider,
                           IOService ioService,
                           StudentDao studentDao,
                           MessageSourceService messageSourceService) {
         this.questionDao = csvQuestionDao;
         this.ioService = ioService;
         this.studentDao = studentDao;
-        this.questionToPass = appProps.getQuestionToPass();
+        this.questionToPass = provider.getQuestionToPass();
         this.messageSourceService = messageSourceService;
     }
 
