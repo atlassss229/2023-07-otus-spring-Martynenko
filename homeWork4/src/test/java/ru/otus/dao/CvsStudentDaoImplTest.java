@@ -11,6 +11,7 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import ru.otus.model.Question;
 import ru.otus.model.Student;
 import ru.otus.service.IOService;
+
 import java.util.List;
 
 @ExtendWith({OutputCaptureExtension.class})
