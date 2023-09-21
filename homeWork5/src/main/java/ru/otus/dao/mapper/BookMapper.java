@@ -1,4 +1,4 @@
-package ru.otus.dao;
+package ru.otus.dao.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import ru.otus.model.Author;
@@ -15,12 +15,14 @@ public class BookMapper implements RowMapper<Book> {
             return new Book(
                     resultSet.getString("book_name"),
                     resultSet.getInt("book_year"),
-                    new Author(resultSet.getLong("author_id"),
-                            null),
-                    new Genre(resultSet.getLong("genre_id"),
-                            null));
+                    new Author(
+                            resultSet.getLong("author_id"),
+                            resultSet.getString("authors_name")),
+                    new Genre(
+                            resultSet.getLong("genre_id"),
+                            resultSet.getString("genre_name")));
         } catch (SQLException e) {
-            System.out.println("sql ooops");
+            System.out.println("mapperError");
             return null;
         }
     }

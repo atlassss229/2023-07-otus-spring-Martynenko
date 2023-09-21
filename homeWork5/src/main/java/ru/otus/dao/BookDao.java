@@ -3,6 +3,7 @@ package ru.otus.dao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.otus.dao.mapper.BookMapper;
 import ru.otus.model.Book;
 
 import java.util.List;
@@ -29,8 +30,16 @@ public class BookDao {
 
     public List<Book> getAallBooks() {
         String sql = "" +
-                "SELECT * " +
-                "FROM books";
+                "SELECT " +
+                "book_name, " +
+                "book_year, " +
+                "books.author_id as author_id, " +
+                "books.genre_id as genre_id, " +
+                "authors.authors_name, " +
+                "genres.genres_name " +
+                "FROM books " +
+                "LEFT JOIN authors ON books.author_id = authors.id " +
+                "LEFT JOIN genres ON books.genre_id = genres.id";
         List<Book> allBooks = jdbcTemplate.query(sql, bookMapper);
         return allBooks;
     }
