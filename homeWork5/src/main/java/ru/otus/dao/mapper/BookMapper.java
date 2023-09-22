@@ -20,9 +20,9 @@ public class BookMapper implements RowMapper<Book> {
                             resultSet.getString("authors_name")),
                     new Genre(
                             resultSet.getLong("genre_id"),
-                            resultSet.getString("genre_name")));
+                            resultSet.getString("genres_name")));
         } catch (SQLException e) {
-            System.out.println("mapperError");
+            System.out.println("BookMapperError");
             return null;
         }
     }

@@ -14,7 +14,7 @@ public class GenreMapper implements RowMapper<Genre> {
                     resultSet.getLong("id"),
                     resultSet.getString("genres_name"));
         } catch (SQLException e) {
-            System.out.println("AuthorMapperError");
+            System.out.println("GenreMapperError");
             return null;
         }
     }

@@ -1,16 +1,17 @@
 server:
-  port: 8030
-
+  port: 8080
 spring:
   h2:
     console:
       path: /h2-console
-      enabled: true
+      enabled: on
       settings:
         web-allow-others: true
 
   datasource:
     url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
     driverClassName: org.h2.Driver
 
   sql:
@@ -20,6 +21,7 @@ spring:
       schema-locations: schema.sql
 
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     generate-ddl: false
     hibernate:
       ddl-auto: none
