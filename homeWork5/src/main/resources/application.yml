@@ -17,7 +17,7 @@ spring:
   sql:
     init:
       mode: always
-      data-locations: test_data.sql
+      data-locations: data.sql
       schema-locations: schema.sql
 
   jpa:

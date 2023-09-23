@@ -16,6 +16,14 @@ public class Book {
 
     private final Genre genre;
 
+    public Book(Long id, String name, Integer year, Author author, Genre genre) {
+        this.id = id;
+        this.name = name;
+        this.year = year;
+        this.author = author;
+        this.genre = genre;
+    }
+
     public Book(String name, Integer year, Author author, Genre genre) {
         this.name = name;
         this.year = year;

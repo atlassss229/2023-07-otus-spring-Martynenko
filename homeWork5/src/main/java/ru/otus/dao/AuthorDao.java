@@ -1,21 +1,13 @@
 package ru.otus.dao;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-import ru.otus.dao.mapper.AuthorMapper;
+import ru.otus.model.Author;
 
+import java.util.List;
 
-@Repository
-@RequiredArgsConstructor
-public class AuthorDao {
+public interface AuthorDao {
+    Author getIdByNAme(String name);
 
-    private final JdbcTemplate jdbcTemplate;
+    void insertNewAuthor(String authorName);
 
-    private final AuthorMapper authorMapper = new AuthorMapper();
-
-    getIdByNAme
-
-    insertNewAuthor
-
+    List<Author> getAllAuthors();
 }

@@ -13,6 +13,7 @@ public class BookMapper implements RowMapper<Book> {
     public Book mapRow(ResultSet resultSet, int rowNum) {
         try {
             return new Book(
+                    resultSet.getLong("id"),
                     resultSet.getString("book_name"),
                     resultSet.getInt("book_year"),
                     new Author(
