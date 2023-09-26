@@ -10,6 +10,7 @@ import ru.otus.model.Book;
 import ru.otus.model.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 @JdbcTest
 @Import(BookDaoImpl.class)
@@ -21,8 +22,8 @@ public class BookDaoTest {
     private final Book testBook = new Book(
             "The Book",
             2222,
-            new Author(1,"no"),
-            new Genre(1,"no"));
+            new Author(1L,"no"),
+            new Genre(1L,"no"));
 
     @Test
     public void getAllBooksTest() {
@@ -32,27 +33,29 @@ public class BookDaoTest {
 
     @Test
     public void getBookByIdTest() {
-        Book book = bookDao.getBookById(2L);
+        Book book = bookDao.getBookById(2L).get();
         Assertions.assertEquals("Bad Book", book.getName());
     }
     @Test
     public void insertBookTest() {
-        bookDao.insertBook(testBook);
-        Book book = bookDao.getBookById(3L);
+        bookDao.save(testBook);
+        Book book = bookDao.getBookById(3L).get();
         Assertions.assertEquals("The Book", book.getName());
     }
 
     @Test
     public void deleteBookByIdTest() {
+        testBook.setId(1L);
         bookDao.deleteBookById(1L);
-        Book book = bookDao.getBookById(1L);
+        Optional<Book> book = bookDao.getBookById(1L);
         Assertions.assertNull(book);
     }
 
     @Test
     public void updateBookByIdTest() {
-        bookDao.updateBookById(testBook, 1L);
-        Book book = bookDao.getBookById(1L);
+        testBook.setId(1L);
+        bookDao.updateBook(testBook);
+        Book book = bookDao.getBookById(1L).get();
         Assertions.assertEquals("The Book", book.getName());
     }
 

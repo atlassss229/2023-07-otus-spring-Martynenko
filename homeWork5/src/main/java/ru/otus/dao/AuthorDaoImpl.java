@@ -9,6 +9,7 @@ import ru.otus.model.Author;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Repository
@@ -20,7 +21,7 @@ public class AuthorDaoImpl implements AuthorDao {
     private final AuthorMapper authorMapper = new AuthorMapper();
 
     @Override
-    public Author getIdByNAme(String name) {
+    public Optional<Author> findByName(String name) {
         try {
             Map<String, String> params = Map.of("name", name);
             String sql = "" +
@@ -29,19 +30,26 @@ public class AuthorDaoImpl implements AuthorDao {
                     "authors_name " +
                     "FROM authors " +
                     "WHERE authors_name = :name";
-            return jdbcOperations.queryForObject(sql, params, authorMapper);
+            return Optional.ofNullable(jdbcOperations.queryForObject(sql, params, authorMapper));
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
     @Override
-    public void insertNewAuthor(String authorName) {
+    public Author saveAuthor(String authorName) {
         Map<String, String> params = Map.of("authorName", authorName);
-        String sql = "" +
-                "INSERT INTO authors (authors_name) " +
-                "VALUES (:authorName)";
-        jdbcOperations.update(sql, params);
+        String sql =
+                "SELECT id FROM NEW TABLE (" +
+                        "INSERT INTO authors (authors_name) " +
+                        "VALUES (:authorName)" +
+                        ")";
+        try {
+            Long id = jdbcOperations.queryForObject(sql, params, Long.class);
+            return new Author(id, authorName);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

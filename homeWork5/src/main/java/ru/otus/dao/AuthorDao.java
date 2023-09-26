@@ -3,11 +3,12 @@ package ru.otus.dao;
 import ru.otus.model.Author;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AuthorDao {
-    Author getIdByNAme(String name);
+     Optional<Author> findByName(String name);
 
-    void insertNewAuthor(String authorName);
+    Author saveAuthor(String authorName);
 
     List<Author> getAllAuthors();
 }

@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Author {
-    private long id;
+    private Long id;
 
     private final String name;
 
@@ -14,7 +14,7 @@ public class Author {
         this.name = name;
     }
 
-    public Author(long id, String name) {
+    public Author(Long id, String name) {
         this.id = id;
         this.name = name;
     }

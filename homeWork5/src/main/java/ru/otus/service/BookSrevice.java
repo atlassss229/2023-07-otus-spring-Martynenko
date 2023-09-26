@@ -5,19 +5,15 @@ import ru.otus.model.Book;
 import java.util.List;
 
 public interface BookSrevice {
-    void createBook();
+    void createBook(Book book);
 
-    Book getBookInfo();
+    Book getAuthorAndGenreId(Book book);
 
     List<Book> getAllBooks();
 
-    Book getBookById();
+    Book getBookById(Long id);
 
-    Integer getNumeric();
+    void deleteBook(Long id);
 
-    void printBook(Book book);
-
-    void deleteBook();
-
-    void updateBook();
+    void updateBook(Book book);
 }

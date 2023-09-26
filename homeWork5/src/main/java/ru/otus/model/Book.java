@@ -1,20 +1,22 @@
 package ru.otus.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Book {
     private long id;
 
-    private final String name;
+    private String name;
 
-    private final Integer year;
+    private Integer year;
 
-    private final Author author;
+    private Author author;
 
-    private final Genre genre;
+    private Genre genre;
 
     public Book(Long id, String name, Integer year, Author author, Genre genre) {
         this.id = id;

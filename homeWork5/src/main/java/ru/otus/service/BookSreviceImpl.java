@@ -10,7 +10,7 @@ import ru.otus.model.Book;
 import ru.otus.model.Genre;
 
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,37 +24,29 @@ public class BookSreviceImpl implements BookSrevice {
 
     private final GenreDaoImpl genreDaoImpl;
 
-    private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
-
     @Override
-    public void createBook() {
-        Book book = getBookInfo();
-        bookDaoImpl.insertBook(book);
+    public void createBook(Book book) {
+        book = getAuthorAndGenreId(book);
+        bookDaoImpl.save(book);
     }
 
     @Override
-    public Book getBookInfo() {
-        ioService.printLine("Enter book name:");
-        String bookName = ioService.readLine();
+    public Book getAuthorAndGenreId(Book book) {
 
-        ioService.printLine("Enter book year:");
-        Integer bookYear = getNumeric();
-
-        ioService.printLine("Enter author name:");
-        String authorName = ioService.readLine();
-        Author author = authorDaoImpl.getIdByNAme(authorName);
+        String authorName = book.getAuthor().getName();
+        Optional<Author> author = authorDaoImpl.findByName(authorName);
         if (author == null) {
-            authorDaoImpl.insertNewAuthor(authorName);
-            author = authorDaoImpl.getIdByNAme(authorName);
+            author = Optional.ofNullable(authorDaoImpl.saveAuthor(authorName));
+            book.setAuthor(author.get());
         }
-        ioService.printLine("Enter genre:");
-        String genreName = ioService.readLine();
-        Genre genre = genreDaoImpl.getIdByNAme(genreName);
+
+        String genreName = book.getGenre().getName();
+        Optional<Genre> genre = genreDaoImpl.findByName(genreName);
         if (genre == null) {
-            genreDaoImpl.insertNewGenre(genreName);
-            genre = genreDaoImpl.getIdByNAme(genreName);
+            genre = Optional.ofNullable(genreDaoImpl.save(genreName));
+            book.setGenre(genre.get());
         }
-        return new Book(bookName, bookYear, author, genre);
+        return book;
     }
 
     @Override
@@ -63,57 +55,27 @@ public class BookSreviceImpl implements BookSrevice {
     }
 
     @Override
-    public Book getBookById() {
-        ioService.printLine("Enter book id:");
-        Long id = Long.valueOf(getNumeric());
-        return bookDaoImpl.getBookById(id);
-    }
-
-    @Override
-    public Integer getNumeric() {
-        while (true) {
-            String strNum = ioService.readLine();
-            if (strNum != null && pattern.matcher(strNum).matches()) {
-                return Integer.parseInt(strNum);
-            } else {
-                ioService.printLine("please enter numeric value");
-            }
+    public Book getBookById(Long id) {
+        Optional<Book> book = bookDaoImpl.getBookById(id);
+        if (book != null) {
+            return book.get();
+        } else {
+            ioService.printLine("no book with such id...");
+            return null;
         }
     }
 
     @Override
-    public void printBook(Book book) {
-        ioService.printLine("\n----------");
-        ioService.printLine(String.valueOf(book.getId()));
-        ioService.printLine(book.getName());
-        ioService.printLine(book.getYear().toString());
-        ioService.printLine(book.getAuthor().getName());
-        ioService.printLine(book.getGenre().getName());
-        ioService.printLine("----------");
-    }
-
-    @Override
-    public void deleteBook() {
-        ioService.printLine("please enter book Id");
-        Long id = Long.valueOf(getNumeric());
-        if (bookDaoImpl.getBookById(id) != null) {
+    public void deleteBook(Long id) {
+        if (getBookById(id) != null) {
             bookDaoImpl.deleteBookById(id);
-        } else {
-            ioService.printLine("no book with such id...");
         }
     }
 
     @Override
-    public void updateBook() {
-        ioService.printLine("please enter book Id");
-        Long id = Long.valueOf(getNumeric());
-        Book oldBook = bookDaoImpl.getBookById(id);
-        if (oldBook != null) {
-            Book newBook = getBookInfo();
-            bookDaoImpl.updateBookById(newBook, id);
-
-        } else {
-            ioService.printLine("no book with such id...");
-        }
+    public void updateBook(Book book) {
+        book = getAuthorAndGenreId(book);
+        bookDaoImpl.updateBook(book);
     }
 }
+

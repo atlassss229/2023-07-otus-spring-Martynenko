@@ -9,6 +9,7 @@ import ru.otus.model.Genre;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,28 +20,36 @@ public class GenreDaoImpl implements GenreDao {
     private final GenreMapper genreMapper = new GenreMapper();
 
     @Override
-    public Genre getIdByNAme(String name) {
+    public Optional<Genre> findByName(String name) {
         Map<String, String> params = Map.of("name", name);
         try {
-            String sql = "" +
+            String sql =
                     "SELECT " +
                     "id, " +
                     "genres_name " +
                     "FROM genres " +
                     "WHERE genres_name = :name";
-            return jdbcOperations.queryForObject(sql, params, genreMapper);
+            return Optional.ofNullable(jdbcOperations.queryForObject(sql, params, genreMapper));
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
     @Override
-    public void insertNewGenre(String genreName) {
+    public Genre save(String genreName) {
         Map<String, String> params = Map.of("genreName", genreName);
-        String sql = "" +
-                "INSERT INTO genres (genres_name) " +
-                "VALUES (:genreName) ";
-        jdbcOperations.update(sql, params);
+        String sql =
+                "SELECT id FROM NEW TABLE (" +
+                        "INSERT INTO genres (genres_name) " +
+                        "VALUES (:genreName)" +
+                        ")";
+        try {
+            Long id = jdbcOperations.queryForObject(sql, params, Long.class);
+
+            return new Genre(id, genreName);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

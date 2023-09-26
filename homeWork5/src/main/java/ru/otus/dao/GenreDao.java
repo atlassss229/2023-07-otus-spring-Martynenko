@@ -3,11 +3,12 @@ package ru.otus.dao;
 import ru.otus.model.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GenreDao {
-    Genre getIdByNAme(String name);
+    Optional<Genre> findByName(String name);
 
-    void insertNewGenre(String genreName);
+    Genre save(String genreName);
 
     List<Genre> getAllGenres();
 }
