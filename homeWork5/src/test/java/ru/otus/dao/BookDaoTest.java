@@ -48,7 +48,7 @@ public class BookDaoTest {
         testBook.setId(1L);
         bookDao.deleteBookById(1L);
         Optional<Book> book = bookDao.getBookById(1L);
-        Assertions.assertNull(book);
+        Assertions.assertTrue(book.isEmpty());
     }
 
     @Test

@@ -2,7 +2,10 @@ package ru.otus.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.dao.mapper.GenreMapper;
 import ru.otus.model.Genre;
@@ -25,31 +28,31 @@ public class GenreDaoImpl implements GenreDao {
         try {
             String sql =
                     "SELECT " +
-                    "id, " +
-                    "genres_name " +
-                    "FROM genres " +
-                    "WHERE genres_name = :name";
+                            "id, " +
+                            "genres_name " +
+                            "FROM genres " +
+                            "WHERE genres_name = :name";
             return Optional.ofNullable(jdbcOperations.queryForObject(sql, params, genreMapper));
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return Optional.empty();
         }
     }
 
     @Override
     public Genre save(String genreName) {
-        Map<String, String> params = Map.of("genreName", genreName);
+        KeyHolder holder = new GeneratedKeyHolder();
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("genreName", genreName);
         String sql =
                 "SELECT id FROM NEW TABLE (" +
                         "INSERT INTO genres (genres_name) " +
                         "VALUES (:genreName)" +
                         ")";
-        try {
-            Long id = jdbcOperations.queryForObject(sql, params, Long.class);
 
-            return new Genre(id, genreName);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+        jdbcOperations.update(sql, namedParameters, holder);
+
+        return new Genre(holder.getKey().longValue(), genreName);
+
     }
 
     @Override

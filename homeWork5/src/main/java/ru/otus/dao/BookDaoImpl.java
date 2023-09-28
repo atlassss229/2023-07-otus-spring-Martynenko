@@ -2,7 +2,10 @@ package ru.otus.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.dao.mapper.BookMapper;
 import ru.otus.model.Book;
@@ -21,23 +24,21 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book save(Book book) {
+        KeyHolder holder = new GeneratedKeyHolder();
         String sql =
-                "SELECT id FROM NEW TABLE (" +
-                        "INSERT INTO books (book_name, book_year, author_id, genre_id) " +
-                        "values (:name, :year, :authorId, :genreId))";
-        try {
-            Long id = jdbcOperations.queryForObject(sql,
-                    Map.of(
-                    "name", book.getName(),
-                    "year", book.getYear(),
-                    "authorId", book.getAuthor().getId(),
-                    "genreId", book.getGenre().getId()),
-                    Long.class);
-            book.setId(id);
-            return book;
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+                "INSERT INTO books (book_name, book_year, author_id, genre_id) " +
+                        "VALUES (:name, :year, :authorId, :genreId)";
+
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("name", book.getName());
+        namedParameters.addValue("year", book.getYear());
+        namedParameters.addValue("authorId", book.getAuthor().getId());
+        namedParameters.addValue("genreId", book.getGenre().getId());
+
+        jdbcOperations.update(sql, namedParameters, holder);
+        book.setId(holder.getKey().longValue());
+        return book;
+
     }
 
     @Override
@@ -78,7 +79,7 @@ public class BookDaoImpl implements BookDao {
 
             return Optional.ofNullable(jdbcOperations.queryForObject(sql, params, bookMapper));
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return Optional.empty();
         }
     }
 

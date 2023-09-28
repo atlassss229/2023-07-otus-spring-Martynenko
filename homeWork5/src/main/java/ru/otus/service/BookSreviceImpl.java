@@ -35,14 +35,14 @@ public class BookSreviceImpl implements BookSrevice {
 
         String authorName = book.getAuthor().getName();
         Optional<Author> author = authorDaoImpl.findByName(authorName);
-        if (author == null) {
+        if (author.isEmpty()) {
             author = Optional.ofNullable(authorDaoImpl.saveAuthor(authorName));
             book.setAuthor(author.get());
         }
 
         String genreName = book.getGenre().getName();
         Optional<Genre> genre = genreDaoImpl.findByName(genreName);
-        if (genre == null) {
+        if (genre.isEmpty()) {
             genre = Optional.ofNullable(genreDaoImpl.save(genreName));
             book.setGenre(genre.get());
         }
@@ -57,7 +57,7 @@ public class BookSreviceImpl implements BookSrevice {
     @Override
     public Book getBookById(Long id) {
         Optional<Book> book = bookDaoImpl.getBookById(id);
-        if (book != null) {
+        if (book.isPresent()) {
             return book.get();
         } else {
             ioService.printLine("no book with such id...");
