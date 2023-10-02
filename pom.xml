@@ -13,6 +13,7 @@
         <module>homeWork2</module>
         <module>homeWork3</module>
         <module>homeWork4</module>
+        <module>homeWork5</module>
     </modules>
 
     <parent>
@@ -37,6 +38,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>6.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -87,6 +94,20 @@
             <groupId>org.springframework.shell</groupId>
             <artifactId>spring-shell-starter</artifactId>
             <version>${spring.shell.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
