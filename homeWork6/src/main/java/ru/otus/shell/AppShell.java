@@ -7,8 +7,10 @@ import ru.otus.dao.AuthorDaoImpl;
 import ru.otus.dao.GenreDaoImpl;
 import ru.otus.model.Author;
 import ru.otus.model.Book;
+import ru.otus.model.Comment;
 import ru.otus.model.Genre;
 import ru.otus.service.BookSreviceImpl;
+import ru.otus.service.CommentService;
 import ru.otus.service.IOService;
 import ru.otus.service.PrintBookService;
 
@@ -28,6 +30,8 @@ public class AppShell {
     private final GenreDaoImpl genreDaoImpl;
 
     private final PrintBookService printBookService;
+
+    private final CommentService commentService;
 
     private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
@@ -122,6 +126,59 @@ public class AppShell {
             } else {
                 ioService.printLine("please enter numeric value");
             }
+        }
+    }
+
+    @ShellMethod(value = "add-comment", key = {"add-comment", "ac"})
+    public void addBooksComment() {
+        ioService.printLine("please enter book Id");
+        Long id = Long.valueOf(getNumeric());
+        Book book = bookSreviceImpl.getBookById(id);
+        ioService.printLine("Enter comment");
+        String commentText = ioService.readLine();
+        Comment comment = new Comment(commentText, book);
+        commentService.saveComment(comment);
+    }
+
+    @ShellMethod(value = "get-comment-by-id", key = {"get-comment-by-id", "gc"})
+    public void getCommentById() {
+        ioService.printLine("please enter comment Id");
+        Long id = Long.valueOf(getNumeric());
+        Comment comment = commentService.getCommentById(id);
+        if (comment != null) {
+            ioService.printLine(comment.getText());
+        }
+    }
+
+    @ShellMethod(value = "get-comments-by-book-id", key = {"get-comments-by-book-id", "gbc"})
+    public void getCommentsByBookId() {
+        ioService.printLine("please enter book Id");
+        Long id = Long.valueOf(getNumeric());
+        List<Comment> commentList = commentService.getCommentsByBookId(id);
+        if (commentList != null) {
+            for (Comment comment : commentList) {
+                ioService.printLine(comment.getText());
+            }
+        }
+    }
+
+    @ShellMethod(value = "delete-comment-by-id", key = {"delete-comment-by-id", "dc"})
+    public void deleteComment() {
+        ioService.printLine("please enter comment Id");
+        Long id = Long.valueOf(getNumeric());
+        commentService.deleteCommentById(id);
+    }
+
+    @ShellMethod(value = "update-comment-by-id", key = {"update-comment-by-id", "uc"})
+    public void updateComment() {
+        ioService.printLine("please enter comment Id");
+        Long id = Long.valueOf(getNumeric());
+        Comment comment = commentService.getCommentById(id);
+        if (comment != null) {
+            ioService.printLine("please enter new comment");
+            String newCommentText = ioService.readLine();
+            comment.setText(newCommentText);
+            commentService.updateCommentById(comment);
         }
     }
 }

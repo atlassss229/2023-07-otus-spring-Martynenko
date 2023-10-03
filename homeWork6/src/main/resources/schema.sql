@@ -24,3 +24,12 @@ CREATE TABLE books
     genre_id  bigint references genres (id),
     primary key (id)
 );
+
+DROP TABLE IF EXISTS comments;
+CREATE TABLE comments
+(
+    id bigserial,
+    text varchar(255),
+    book_id bigint references books (id),
+    primary key (id)
+);

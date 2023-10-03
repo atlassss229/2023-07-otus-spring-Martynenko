@@ -20,8 +20,6 @@ public class BookDaoTest {
     @Autowired
     private BookDaoImpl bookDao;
 
-    @Autowired
-    private TestEntityManager testEntityManager;
     private final Book testBook = new Book(
             "The Book",
             2222,
@@ -53,5 +51,4 @@ public class BookDaoTest {
         Optional<Book> book = bookDao.getBookById(1L);
         Assertions.assertTrue(book.isEmpty());
     }
-
 }
