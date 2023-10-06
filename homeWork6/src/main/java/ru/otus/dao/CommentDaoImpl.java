@@ -19,8 +19,13 @@ public class CommentDaoImpl implements CommentDao {
     private final EntityManager entityManager;
 
     @Override
-    public void save(Comment comment) {
-        entityManager.persist(comment);
+    public Comment save(Comment comment) {
+        if (comment.getId() == null) {
+            entityManager.persist(comment);
+            return comment;
+        } else {
+            return entityManager.merge(comment);
+        }
     }
 
     @Override
@@ -42,11 +47,6 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public void deleteComment(Comment comment) {
         entityManager.remove(comment);
-    }
-
-    @Override
-    public void update(Comment comment) {
-        entityManager.merge(comment);
     }
 }
 

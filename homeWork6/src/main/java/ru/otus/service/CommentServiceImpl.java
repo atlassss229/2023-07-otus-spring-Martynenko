@@ -61,6 +61,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void updateCommentById(Comment comment) {
-        commentDao.update(comment);
+        commentDao.save(comment);
     }
 }

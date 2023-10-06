@@ -7,8 +7,6 @@ import java.util.List;
 public interface BookSrevice {
     void createBook(Book book);
 
-    Book getAuthorAndGenreId(Book book);
-
     List<Book> getAllBooks();
 
     Book getBookById(Long id);

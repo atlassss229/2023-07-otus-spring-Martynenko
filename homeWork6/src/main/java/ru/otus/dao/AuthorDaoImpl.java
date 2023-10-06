@@ -30,7 +30,7 @@ public class AuthorDaoImpl implements AuthorDao {
     public Author saveAuthor(String authorName) {
         Author author = new Author(authorName);
         entityManager.persist(author);
-        return findByName(authorName).get();
+        return author;
         }
 
     @Override

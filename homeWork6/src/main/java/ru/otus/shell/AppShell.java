@@ -78,8 +78,10 @@ public class AppShell {
         if (book != null) {
             getBookFromConsole(book);
             bookSreviceImpl.updateBook(book);
+        } else {
+            ioService.printLine("no book with such id...");
         }
-        ioService.printLine("book updated");
+
     }
 
     @ShellMethod(value = "get-book-by-id", key = {"get-book-by-id", "gb"})
@@ -89,6 +91,8 @@ public class AppShell {
         Book book = bookSreviceImpl.getBookById(id);
         if (book != null) {
             printBookService.printBook(book);
+        } else {
+            ioService.printLine("no book with such id...");
         }
     }
 
@@ -134,10 +138,14 @@ public class AppShell {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
         Book book = bookSreviceImpl.getBookById(id);
-        ioService.printLine("Enter comment");
-        String commentText = ioService.readLine();
-        Comment comment = new Comment(commentText, book);
-        commentService.saveComment(comment);
+        if (book != null) {
+            ioService.printLine("Enter comment");
+            String commentText = ioService.readLine();
+            Comment comment = new Comment(commentText, book);
+            commentService.saveComment(comment);
+        } else {
+            ioService.printLine("no book with such id...");
+        }
     }
 
     @ShellMethod(value = "get-comment-by-id", key = {"get-comment-by-id", "gc"})

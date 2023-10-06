@@ -23,11 +23,12 @@ public class BookDaoImpl implements BookDao {
     private final EntityManager entityManager;
 
     @Override
-    public void save(Book book) {
+    public Book save(Book book) {
         if (book.getId() == null) {
             entityManager.persist(book);
+            return book;
         } else {
-            entityManager.merge(book);
+            return entityManager.merge(book);
         }
     }
 

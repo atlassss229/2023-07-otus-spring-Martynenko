@@ -35,7 +35,7 @@ public class Book {
     private String name;
 
     @Column(name = "book_year", nullable = false)
-    private Integer year;
+    private int year;
 
     @Fetch(FetchMode.SELECT)
     @ManyToOne(targetEntity = Author.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)

@@ -39,7 +39,7 @@ public class BookDaoTest {
     }
     @Test
     public void insertBookTest() {
-        bookDao.save(testBook);
+        Assertions.assertEquals("The Book", bookDao.save(testBook).getName());
         Book book = bookDao.getBookById(3L).get();
         Assertions.assertEquals("The Book", book.getName());
     }

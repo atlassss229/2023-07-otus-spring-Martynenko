@@ -28,9 +28,9 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public Genre save(String genreName) {
-        Genre author = new Genre(genreName);
-        entityManager.persist(author);
-        return findByName(genreName).get();
+        Genre genre = new Genre(genreName);
+        entityManager.persist(genre);
+        return genre;
     }
 
     @Override

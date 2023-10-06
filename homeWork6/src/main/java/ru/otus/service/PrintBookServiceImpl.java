@@ -17,7 +17,7 @@ public class PrintBookServiceImpl implements PrintBookService {
         ioService.printLine("\n----------");
         ioService.printLine(String.valueOf(book.getId()));
         ioService.printLine(book.getName());
-        ioService.printLine(book.getYear().toString());
+        ioService.printLine(String.valueOf(book.getYear()));
         ioService.printLine(book.getAuthor().getName());
         ioService.printLine(book.getGenre().getName());
         ioService.printLine("----------");
