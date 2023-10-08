@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface AuthorDao {
      Optional<Author> findByName(String name);
 
-    Author saveAuthor(String authorName);
+    Author save(Author author);
 
     List<Author> getAllAuthors();
 }

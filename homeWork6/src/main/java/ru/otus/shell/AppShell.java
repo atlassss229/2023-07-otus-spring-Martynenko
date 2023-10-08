@@ -66,8 +66,12 @@ public class AppShell {
     public void deleteBook() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        bookSreviceImpl.deleteBook(id);
-        ioService.printLine("book deleted");
+        Book book = bookSreviceImpl.getBookById(id);
+        if (book != null) {
+            bookSreviceImpl.deleteBook(id);
+        } else {
+            ioService.printLine("no book with such id...");
+        }
     }
 
     @ShellMethod(value = "update-book", key = {"update-book", "ub"})
@@ -77,7 +81,7 @@ public class AppShell {
         Book book = bookSreviceImpl.getBookById(id);
         if (book != null) {
             getBookFromConsole(book);
-            bookSreviceImpl.updateBook(book);
+            bookSreviceImpl.createBook(book);
         } else {
             ioService.printLine("no book with such id...");
         }
@@ -155,6 +159,8 @@ public class AppShell {
         Comment comment = commentService.getCommentById(id);
         if (comment != null) {
             ioService.printLine(comment.getText());
+        } else {
+            ioService.printLine("no comment with such id...");
         }
     }
 
@@ -162,11 +168,18 @@ public class AppShell {
     public void getCommentsByBookId() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        List<Comment> commentList = commentService.getCommentsByBookId(id);
-        if (commentList != null) {
-            for (Comment comment : commentList) {
-                ioService.printLine(comment.getText());
+        Book book = bookSreviceImpl.getBookById(id);
+        if (book != null) {
+            List<Comment> commentList = commentService.getCommentsByBookId(id);
+            if (commentList != null) {
+                for (Comment comment : commentList) {
+                    ioService.printLine(comment.getText());
+                }
+            } else {
+                ioService.printLine("there is no comments");
             }
+        } else {
+            ioService.printLine("no book with such id...");
         }
     }
 
@@ -174,7 +187,12 @@ public class AppShell {
     public void deleteComment() {
         ioService.printLine("please enter comment Id");
         Long id = Long.valueOf(getNumeric());
-        commentService.deleteCommentById(id);
+        Comment comment = commentService.getCommentById(id);
+        if (comment != null) {
+            commentService.deleteCommentById(comment);
+        } else {
+            ioService.printLine("no comment with such id...");
+        }
     }
 
     @ShellMethod(value = "update-comment-by-id", key = {"update-comment-by-id", "uc"})
@@ -187,6 +205,8 @@ public class AppShell {
             String newCommentText = ioService.readLine();
             comment.setText(newCommentText);
             commentService.updateCommentById(comment);
+        } else {
+            ioService.printLine("no comment with such id...");
         }
     }
 }

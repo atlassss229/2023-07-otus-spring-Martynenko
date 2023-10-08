@@ -27,10 +27,13 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public Genre save(String genreName) {
-        Genre genre = new Genre(genreName);
-        entityManager.persist(genre);
-        return genre;
+    public Genre save(Genre genre) {
+        if (genre.getId() == null) {
+            entityManager.persist(genre);
+            return genre;
+        } else {
+            return entityManager.merge(genre);
+        }
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface GenreDao {
     Optional<Genre> findByName(String name);
 
-    Genre save(String genreName);
+    Genre save(Genre genre);
 
     List<Genre> getAllGenres();
 }

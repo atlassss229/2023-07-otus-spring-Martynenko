@@ -27,11 +27,14 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public Author saveAuthor(String authorName) {
-        Author author = new Author(authorName);
-        entityManager.persist(author);
-        return author;
+    public Author save(Author author) {
+        if (author.getId() == null) {
+            entityManager.persist(author);
+            return author;
+        } else {
+            return entityManager.merge(author);
         }
+    }
 
     @Override
     public List<Author> getAllAuthors() {

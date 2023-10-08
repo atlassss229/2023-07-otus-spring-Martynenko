@@ -3,8 +3,12 @@ package ru.otus.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDaoImpl;
+import ru.otus.dao.GenreDao;
+import ru.otus.model.Author;
 import ru.otus.model.Book;
+import ru.otus.model.Genre;
 
 
 import java.util.List;
@@ -16,16 +20,19 @@ public class BookSreviceImpl implements BookSrevice {
 
     private final BookDaoImpl bookDaoImpl;
 
-    private final IOService ioService;
+    private final GenreDao genreDao;
 
-    private final AutorGenreService autorGenreService;
+    private final AuthorDao authorDao;
 
 
     @Override
     @Transactional
-    public void createBook(Book book) {
-        book = autorGenreService.getAuthorAndGenreId(book);
-        bookDaoImpl.save(book);
+    public Book createBook(Book book) {
+        Author author = book.getAuthor();
+        book.setAuthor(authorDao.save(author));
+        Genre genre = book.getGenre();
+        book.setGenre(genreDao.save(genre));
+        return bookDaoImpl.save(book);
     }
 
 
@@ -39,24 +46,17 @@ public class BookSreviceImpl implements BookSrevice {
     @Transactional(readOnly = true)
     public Book getBookById(Long id) {
         Optional<Book> book = bookDaoImpl.getBookById(id);
-        return book.orElse(null);
-    }
-
-    @Override
-    @Transactional
-    public void deleteBook(Long id) {
-        if (bookDaoImpl.getBookById(id).isEmpty()) {
-            bookDaoImpl.deleteBookById(id);
+        if (book.isPresent()) {
+            return book.orElse(null);
+        } else {
+            return null;
         }
     }
 
     @Override
     @Transactional
-    public void updateBook(Book book) {
-        book = autorGenreService.getAuthorAndGenreId(book);
-        bookDaoImpl.save(book);
+    public void deleteBook(Long id) {
+        bookDaoImpl.deleteBookById(id);
     }
-
-
 }
 
