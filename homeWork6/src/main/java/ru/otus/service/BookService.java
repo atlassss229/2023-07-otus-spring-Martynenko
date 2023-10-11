@@ -1,10 +1,11 @@
 package ru.otus.service;
 
 import ru.otus.model.Book;
+import ru.otus.model.Comment;
 
 import java.util.List;
 
-public interface BookSrevice {
+public interface BookService {
     Book createBook(Book book);
 
     List<Book> getAllBooks();
@@ -12,4 +13,7 @@ public interface BookSrevice {
     Book getBookById(Long id);
 
     void deleteBook(Long id);
+
+    void updateBookId(Book book);
+
 }

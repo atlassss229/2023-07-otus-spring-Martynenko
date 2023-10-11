@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.CommentDao;
+import ru.otus.exception.NotFoundException;
 import ru.otus.model.Comment;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +18,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public Comment getCommentById(Long id) {
-        Optional<Comment> comment = commentDao.getCommentById(id);
-        if (comment.isPresent()) {
-            return comment.get();
-        } else {
-            return null;
-        }
-
+        return commentDao.getCommentById(id).orElseThrow(() -> new NotFoundException("comment not found"));
     }
 
     @Override

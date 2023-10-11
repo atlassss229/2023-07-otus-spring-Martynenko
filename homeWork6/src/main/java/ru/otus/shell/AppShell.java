@@ -3,14 +3,14 @@ package ru.otus.shell;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.dao.AuthorDaoImpl;
-import ru.otus.dao.GenreDaoImpl;
 import ru.otus.model.Author;
 import ru.otus.model.Book;
 import ru.otus.model.Comment;
 import ru.otus.model.Genre;
-import ru.otus.service.BookSreviceImpl;
+import ru.otus.service.AuthorService;
+import ru.otus.service.BookService;
 import ru.otus.service.CommentService;
+import ru.otus.service.GenreService;
 import ru.otus.service.IOService;
 import ru.otus.service.PrintBookService;
 
@@ -23,15 +23,15 @@ public class AppShell {
 
     private final IOService ioService;
 
-    private final BookSreviceImpl bookSreviceImpl;
+    private final BookService bookService;
 
-    private final AuthorDaoImpl authorDaoImpl;
-
-    private final GenreDaoImpl genreDaoImpl;
+    private final AuthorService authorService;
 
     private final PrintBookService printBookService;
 
     private final CommentService commentService;
+
+    private final GenreService genreService;
 
     private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
@@ -39,7 +39,9 @@ public class AppShell {
     public void createBook() {
         Book book = new Book();
         getBookFromConsole(book);
-        bookSreviceImpl.createBook(book);
+        book.setGenre(genreService.checkGenre(book.getGenre()));
+        book.setAuthor(authorService.checkAuthor(book.getAuthor()));
+        bookService.createBook(book);
         ioService.printLine("book created");
     }
 
@@ -66,43 +68,32 @@ public class AppShell {
     public void deleteBook() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        Book book = bookSreviceImpl.getBookById(id);
-        if (book != null) {
-            bookSreviceImpl.deleteBook(id);
-        } else {
-            ioService.printLine("no book with such id...");
-        }
+        bookService.getBookById(id);
+        bookService.deleteBook(id);
     }
 
     @ShellMethod(value = "update-book", key = {"update-book", "ub"})
     public void updateBook() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        Book book = bookSreviceImpl.getBookById(id);
-        if (book != null) {
-            getBookFromConsole(book);
-            bookSreviceImpl.createBook(book);
-        } else {
-            ioService.printLine("no book with such id...");
-        }
-
+        Book book = bookService.getBookById(id);
+        getBookFromConsole(book);
+        book.setGenre(genreService.checkGenre(book.getGenre()));
+        book.setAuthor(authorService.checkAuthor(book.getAuthor()));
+        bookService.updateBookId(book);
     }
 
     @ShellMethod(value = "get-book-by-id", key = {"get-book-by-id", "gb"})
     public void getBookById() {
         ioService.printLine("Enter book id:");
         Long id = Long.valueOf(getNumeric());
-        Book book = bookSreviceImpl.getBookById(id);
-        if (book != null) {
-            printBookService.printBook(book);
-        } else {
-            ioService.printLine("no book with such id...");
-        }
+        Book book = bookService.getBookById(id);
+        printBookService.printBook(book);
     }
 
     @ShellMethod(value = "print-all-books", key = {"print-all-books", "pab"})
     public void getAllBooks() {
-        List<Book> bookList = bookSreviceImpl.getAllBooks();
+        List<Book> bookList = bookService.getAllBooks();
         for (var book : bookList) {
             printBookService.printBook(book);
         }
@@ -110,7 +101,7 @@ public class AppShell {
 
     @ShellMethod(value = "print-all-genre", key = {"print-all-genre", "pag"})
     public void printAllGenres() {
-        List<Genre> genreList = genreDaoImpl.getAllGenres();
+        List<Genre> genreList = genreService.getAllGenres();
         ioService.printLine("");
         for (var genre : genreList) {
             ioService.printLine(genre.getName());
@@ -119,7 +110,7 @@ public class AppShell {
 
     @ShellMethod(value = "print-all-authors", key = {"print-all-authors", "paa"})
     public void printAllAuthors() {
-        List<Author> authorList = authorDaoImpl.getAllAuthors();
+        List<Author> authorList = authorService.getAllAuthors();
         ioService.printLine("");
         for (var author : authorList) {
             ioService.printLine(author.getName());
@@ -141,15 +132,12 @@ public class AppShell {
     public void addBooksComment() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        Book book = bookSreviceImpl.getBookById(id);
-        if (book != null) {
-            ioService.printLine("Enter comment");
-            String commentText = ioService.readLine();
-            Comment comment = new Comment(commentText, book);
-            commentService.saveComment(comment);
-        } else {
-            ioService.printLine("no book with such id...");
-        }
+        Book book = bookService.getBookById(id);
+        ioService.printLine("Enter comment");
+        String commentText = ioService.readLine();
+        Comment comment = new Comment(commentText, book);
+        commentService.saveComment(comment);
+
     }
 
     @ShellMethod(value = "get-comment-by-id", key = {"get-comment-by-id", "gc"})
@@ -157,29 +145,21 @@ public class AppShell {
         ioService.printLine("please enter comment Id");
         Long id = Long.valueOf(getNumeric());
         Comment comment = commentService.getCommentById(id);
-        if (comment != null) {
-            ioService.printLine(comment.getText());
-        } else {
-            ioService.printLine("no comment with such id...");
-        }
+        ioService.printLine(comment.getText());
     }
 
     @ShellMethod(value = "get-comments-by-book-id", key = {"get-comments-by-book-id", "gbc"})
     public void getCommentsByBookId() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        Book book = bookSreviceImpl.getBookById(id);
-        if (book != null) {
-            List<Comment> commentList = commentService.getCommentsByBookId(id);
-            if (commentList != null) {
-                for (Comment comment : commentList) {
-                    ioService.printLine(comment.getText());
-                }
-            } else {
-                ioService.printLine("there is no comments");
+        bookService.getBookById(id);
+        List<Comment> commentList = commentService.getCommentsByBookId(id);
+        if (commentList != null) {
+            for (Comment comment : commentList) {
+                ioService.printLine(comment.getText());
             }
         } else {
-            ioService.printLine("no book with such id...");
+            ioService.printLine("there is no comments");
         }
     }
 
@@ -188,11 +168,7 @@ public class AppShell {
         ioService.printLine("please enter comment Id");
         Long id = Long.valueOf(getNumeric());
         Comment comment = commentService.getCommentById(id);
-        if (comment != null) {
-            commentService.deleteCommentById(comment);
-        } else {
-            ioService.printLine("no comment with such id...");
-        }
+        commentService.deleteCommentById(comment);
     }
 
     @ShellMethod(value = "update-comment-by-id", key = {"update-comment-by-id", "uc"})
@@ -200,13 +176,9 @@ public class AppShell {
         ioService.printLine("please enter comment Id");
         Long id = Long.valueOf(getNumeric());
         Comment comment = commentService.getCommentById(id);
-        if (comment != null) {
-            ioService.printLine("please enter new comment");
-            String newCommentText = ioService.readLine();
-            comment.setText(newCommentText);
-            commentService.updateCommentById(comment);
-        } else {
-            ioService.printLine("no comment with such id...");
-        }
+        ioService.printLine("please enter new comment");
+        String newCommentText = ioService.readLine();
+        comment.setText(newCommentText);
+        commentService.updateCommentById(comment);
     }
 }
