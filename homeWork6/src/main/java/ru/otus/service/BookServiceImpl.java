@@ -3,13 +3,9 @@ package ru.otus.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
-import ru.otus.dao.GenreDao;
 import ru.otus.exception.NotFoundException;
-import ru.otus.model.Author;
 import ru.otus.model.Book;
-import ru.otus.model.Genre;
 
 
 import java.util.List;
@@ -19,10 +15,6 @@ import java.util.List;
 public class BookServiceImpl implements BookService {
 
     private final BookDao bookDao;
-
-    private final GenreDao genreDao;
-
-    private final AuthorDao authorDao;
 
     @Override
     @Transactional
@@ -51,6 +43,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void updateBookId(Book book) {
+        getBookById(book.getId());
         bookDao.save(book);
     }
 }

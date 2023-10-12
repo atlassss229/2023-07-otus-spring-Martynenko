@@ -137,7 +137,6 @@ public class AppShell {
         String commentText = ioService.readLine();
         Comment comment = new Comment(commentText, book);
         commentService.saveComment(comment);
-
     }
 
     @ShellMethod(value = "get-comment-by-id", key = {"get-comment-by-id", "gc"})

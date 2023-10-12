@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.AuthorDao;
 import ru.otus.model.Author;
-import ru.otus.model.Genre;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +14,6 @@ import java.util.Optional;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorDao authorDao;
-
-    @Override
-    @Transactional
-    public Optional<Author> findByName(String name) {
-        return authorDao.findByName(name);
-    }
 
     @Override
     @Transactional

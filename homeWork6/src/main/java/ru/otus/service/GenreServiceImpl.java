@@ -12,14 +12,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
-
     private final GenreDao genreDao;
-
-    @Override
-    @Transactional
-    public Optional<Genre> findByName(String name) {
-        return genreDao.findByName(name);
-    }
 
     @Override
     @Transactional
