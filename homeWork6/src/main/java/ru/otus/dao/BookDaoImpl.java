@@ -49,8 +49,7 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void deleteBookById(Long id) {
-        Optional<Book> book = getBookById(id);
-        book.ifPresent(entityManager::remove);
+    public void deleteBook(Book book) {
+        entityManager.remove(entityManager.contains(book) ? book : entityManager.merge(book));
     }
 }

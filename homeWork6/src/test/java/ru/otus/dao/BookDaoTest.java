@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.model.Author;
 import ru.otus.model.Book;
@@ -47,7 +46,7 @@ public class BookDaoTest {
     @Test
     public void deleteBookByIdTest() {
         testBook.setId(1L);
-        bookDao.deleteBookById(1L);
+        bookDao.deleteBook(testBook);
         Optional<Book> book = bookDao.getBookById(1L);
         Assertions.assertTrue(book.isEmpty());
     }

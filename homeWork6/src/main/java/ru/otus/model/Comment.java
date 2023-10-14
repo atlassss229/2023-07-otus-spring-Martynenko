@@ -33,10 +33,9 @@ public class Comment {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public Comment(long id, String commentText, Book book) {
+    public Comment(long id, String commentText) {
         this.id = id;
         this.text = commentText;
-        this.book = book;
     }
 
     public Comment(String commentText, Book book) {

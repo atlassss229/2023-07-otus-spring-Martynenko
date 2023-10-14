@@ -37,15 +37,12 @@ public class AppShell {
 
     @ShellMethod(value = "create-book", key = {"create-book", "cb"})
     public void createBook() {
-        Book book = new Book();
-        getBookFromConsole(book);
-        book.setGenre(genreService.checkGenre(book.getGenre()));
-        book.setAuthor(authorService.checkAuthor(book.getAuthor()));
+        Book book = getBookFromConsole();
         bookService.createBook(book);
-        ioService.printLine("book created");
     }
 
-    private void getBookFromConsole(Book book) {
+    private Book getBookFromConsole() {
+        Book book = new Book();
 
         ioService.printLine("Enter book name:");
         String bookName = ioService.readLine();
@@ -62,13 +59,14 @@ public class AppShell {
         ioService.printLine("Enter genre:");
         String genreName = ioService.readLine();
         book.setGenre(new Genre(genreName));
+
+        return book;
     }
 
     @ShellMethod(value = "delete-book", key = {"delete-book", "db"})
     public void deleteBook() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        bookService.getBookById(id);
         bookService.deleteBook(id);
     }
 
@@ -76,11 +74,9 @@ public class AppShell {
     public void updateBook() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        Book book = bookService.getBookById(id);
-        getBookFromConsole(book);
-        book.setGenre(genreService.checkGenre(book.getGenre()));
-        book.setAuthor(authorService.checkAuthor(book.getAuthor()));
-        bookService.updateBookId(book);
+        Book book = getBookFromConsole();
+        book.setId(id);
+        bookService.updateBookById(book);
     }
 
     @ShellMethod(value = "get-book-by-id", key = {"get-book-by-id", "gb"})
@@ -132,11 +128,12 @@ public class AppShell {
     public void addBooksComment() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        Book book = bookService.getBookById(id);
         ioService.printLine("Enter comment");
         String commentText = ioService.readLine();
-        Comment comment = new Comment(commentText, book);
-        commentService.saveComment(comment);
+
+        Comment comment = new Comment(commentText, new Book());
+        comment.getBook().setId(id);
+        commentService.addComment(comment);
     }
 
     @ShellMethod(value = "get-comment-by-id", key = {"get-comment-by-id", "gc"})
@@ -151,7 +148,6 @@ public class AppShell {
     public void getCommentsByBookId() {
         ioService.printLine("please enter book Id");
         Long id = Long.valueOf(getNumeric());
-        bookService.getBookById(id);
         List<Comment> commentList = commentService.getCommentsByBookId(id);
         if (commentList != null) {
             for (Comment comment : commentList) {
@@ -166,7 +162,9 @@ public class AppShell {
     public void deleteComment() {
         ioService.printLine("please enter comment Id");
         Long id = Long.valueOf(getNumeric());
-        Comment comment = commentService.getCommentById(id);
+
+        Comment comment = new Comment();
+        comment.setId(id);
         commentService.deleteCommentById(comment);
     }
 
@@ -174,10 +172,10 @@ public class AppShell {
     public void updateComment() {
         ioService.printLine("please enter comment Id");
         Long id = Long.valueOf(getNumeric());
-        Comment comment = commentService.getCommentById(id);
         ioService.printLine("please enter new comment");
         String newCommentText = ioService.readLine();
-        comment.setText(newCommentText);
+
+        Comment comment = new Comment(id, newCommentText);
         commentService.updateCommentById(comment);
     }
 }
