@@ -5,16 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.otus.model.Author;
 import ru.otus.model.Book;
 import ru.otus.model.Genre;
 
 import java.util.List;
-import java.util.Optional;
 
 @DataJpaTest
-//@Import({BookRepository.class})
 public class BookRepositoryTest {
 
     @Autowired
@@ -38,15 +35,14 @@ public class BookRepositoryTest {
 
     @Test
     public void getBookByIdTest() {
-        Book book = bookRepository.getBookById(2L);
+        Book book = bookRepository.findById(2L).get();
         Assertions.assertEquals("Bad Book", book.getName());
     }
 
     @Test
     public void deleteBookByIdTest() {
-        Book book = bookRepository.getBookById(1L);
+        Book book = bookRepository.findById(1L).get();
         bookRepository.delete(book);
-        book = bookRepository.getBookById(1L);
-        Assertions.assertNull(book);
+        Assertions.assertTrue(bookRepository.findById(1L).isEmpty());
     }
 }

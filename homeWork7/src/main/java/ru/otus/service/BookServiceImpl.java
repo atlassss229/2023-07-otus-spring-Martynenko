@@ -13,6 +13,7 @@ import ru.otus.model.Genre;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public Book createBook(Book book) {
-        checkAuthorAndGenre(book);
+        loadAuthorAndGenre(book);
         return bookRepository.save(book);
     }
 
@@ -40,41 +41,37 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional(readOnly = true)
     public Book getBookById(Long id) {
-        Book book = bookRepository.getBookById(id);
-        if (book == null) {
-            throw new NotFoundException("book not found");
-        }
-        return book;
+        return bookRepository.findById(id).orElseThrow(() -> new NotFoundException("book not found"));
     }
 
     @Override
     @Transactional
     public void deleteBook(Long id) {
-        Book book = getBookById(id);
-        bookRepository.delete(book);
+        bookRepository.deleteById(id);
     }
 
     @Override
     @Transactional
     public void updateBookById(Book book) {
-        getBookById(book.getId());
-        checkAuthorAndGenre(book);
+        bookRepository.findById(book.getId()).orElseThrow(() -> new NotFoundException("book not found"));
+        loadAuthorAndGenre(book);
         bookRepository.save(book);
     }
 
-    @Transactional(readOnly = true)
-    protected void checkAuthorAndGenre(Book book) {
+    private void loadAuthorAndGenre(Book book) {
         String authorName = book.getAuthor().getName();
-        Author author = authorRepository.findByName(authorName);
-        if (author != null) {
-            book.setAuthor(author);
+        Optional<Author> authorFromDb = authorRepository.findByName(authorName);
+        if (authorFromDb.isEmpty()) {
+            authorFromDb = Optional.of(authorRepository.save(book.getAuthor()));
         }
+        book.setAuthor(authorFromDb.get());
 
         String genreName = book.getGenre().getName();
-        Genre genre = genreRepository.findByName(genreName);
-        if (genre != null) {
-            book.setGenre(genre);
+        Optional<Genre> genreFromDb = genreRepository.findByName(genreName);
+        if (genreFromDb.isEmpty()) {
+            genreFromDb = Optional.of(genreRepository.save(book.getGenre()));
         }
+        book.setGenre(genreFromDb.get());
     }
 }
 

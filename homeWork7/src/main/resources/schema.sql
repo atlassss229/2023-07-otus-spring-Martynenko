@@ -1,21 +1,18 @@
-DROP TABLE IF EXISTS authors;
-CREATE TABLE authors
+CREATE TABLE if not exists authors
 (
     id           bigserial,
     authors_name varchar(255),
     primary key (id)
 );
 
-DROP TABLE IF EXISTS genres;
-CREATE TABLE genres
+CREATE TABLE if not exists genres
 (
     id          bigserial,
     genres_name varchar(255),
     primary key (id)
 );
 
-DROP TABLE IF EXISTS books;
-CREATE TABLE books
+CREATE TABLE if not exists books
 (
     id        bigserial,
     book_name varchar(255),
@@ -25,8 +22,7 @@ CREATE TABLE books
     primary key (id)
 );
 
-DROP TABLE IF EXISTS comments;
-CREATE TABLE comments
+CREATE TABLE if not exists comments
 (
     id bigserial,
     text varchar(255),

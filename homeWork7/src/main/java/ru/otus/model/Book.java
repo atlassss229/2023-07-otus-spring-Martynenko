@@ -8,7 +8,6 @@ import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
@@ -16,10 +15,6 @@ import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -40,19 +35,14 @@ public class Book {
     @Column(name = "book_year", nullable = false)
     private int year;
 
-//    @Fetch(FetchMode.SELECT)
     @ManyToOne(targetEntity = Author.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
 
-//    @Fetch(FetchMode.SELECT)
     @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @Fetch(FetchMode.SELECT)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Comment> comments;
 
     public Book(Long id, String name, Integer year, Author author, Genre genre) {
         this.id = id;

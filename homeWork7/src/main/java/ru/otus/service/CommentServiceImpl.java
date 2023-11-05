@@ -22,20 +22,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public Comment getCommentById(Long id) {
-        Comment comment = commentRepository.getCommentById(id);
-        if (comment == null) {
-            throw new NotFoundException("comment not found");
-        }
-        return comment;
+        return commentRepository.findById(id).orElseThrow(() -> new NotFoundException("comment not found"));
     }
 
     @Override
     @Transactional
     public void addComment(Comment comment) {
-        Book book = bookRepository.getBookById(comment.getBook().getId());
-        if (book == null) {
-            throw new NotFoundException("book not found");
-        }
+        Book book = bookRepository.findById(comment.getBook().getId()).orElseThrow(()
+                -> new NotFoundException("book not found"));
         comment.setBook(book);
         commentRepository.save(comment);
     }
@@ -43,23 +37,23 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<Comment> getCommentsByBookId(Long id) {
-        if (bookRepository.getBookById(id) == null) {
-                throw  new NotFoundException("book not found");
-        }
-        return commentRepository.getCommentsByBookId(id);
+        bookRepository.findById(id).orElseThrow(()
+                -> new NotFoundException("book not found"));
+        return commentRepository.findByBookId(id);
     }
 
     @Override
     @Transactional
     public void deleteCommentById(Comment comment) {
-        getCommentById(comment.getId());
         commentRepository.delete(comment);
     }
 
     @Override
     @Transactional
     public void updateCommentById(Comment comment) {
-        getCommentById(comment.getId());
-        commentRepository.save(comment);
+        Comment commentFromDb = commentRepository.findById(comment.getId()).orElseThrow(()
+                -> new NotFoundException("comment not found"));
+        commentFromDb.setText(comment.getText());
+        commentRepository.save(commentFromDb);
     }
 }

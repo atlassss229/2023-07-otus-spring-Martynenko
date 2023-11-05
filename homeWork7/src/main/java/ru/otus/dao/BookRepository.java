@@ -5,11 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.model.Book;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-    @EntityGraph(attributePaths = {"author","genre"})
+    @EntityGraph(value = "otus-book-author-genre-entity-graph")
     List<Book> findAll();
 
-    @EntityGraph(attributePaths = {"author","genre"})
-    Book getBookById(Long id);
+    @EntityGraph(value = "otus-book-author-genre-entity-graph")
+    Optional<Book> findById(Long id);
 }
